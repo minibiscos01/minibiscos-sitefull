@@ -1,0 +1,30 @@
+/* Circular Logo CSS */
+.circular-logo {
+  width: 55px; /* Increased from 40px */
+  height: 55px; /* Increased from 40px */
+  border-radius: 50%;
+  object-fit: cover;
+  overflow: hidden;
+  display: inline-block;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.circular-logo:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Mobile version */
+@media (max-width: 768px) {
+  .circular-logo {
+    width: 45px; /* Increased from 32px */
+    height: 45px; /* Increased from 32px */
+  }
+}

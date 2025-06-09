@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Embedded Posts Example</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        
+        h1, h2, h3 {
+            color: #d62976; /* Instagram gradient color */
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .instagram-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        
+        .code-block {
+            background-color: #f5f5f5;
+            border-radius: 5px;
+            padding: 15px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .pros-cons {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .pros, .cons {
+            flex: 1;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .pros {
+            background-color: #e8f5e9;
+            border-left: 5px solid #4caf50;
+        }
+        
+        .cons {
+            background-color: #ffebee;
+            border-left: 5px solid #f44336;
+        }
+        
+        .implementation {
+            background-color: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .steps {
+            margin-top: 15px;
+            padding-left: 20px;
+        }
+        
+        .steps li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="section">
+            <h1>Instagram Embedded Posts Example</h1>
+            <p>This page demonstrates how to use Instagram's oEmbed feature to display Instagram posts on your website without needing to configure the Instagram API or create a developer account.</p>
+        </div>
+
+        <div class="section">
+            <h2>Method 1: Using Instagram's JavaScript SDK</h2>
+            <p>This is the simplest method that allows embedding Instagram posts without any API configuration:</p>
+            
+            <div class="code-block">
+                <pre>&lt;!-- 1. Add this script to your page --&gt;
+&lt;script async src="https://www.instagram.com/embed.js"&gt;&lt;/script&gt;
+
+&lt;!-- 2. Add this HTML where you want to display the post --&gt;
+&lt;blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/POST_ID/"&gt;
+    &lt;a href="https://www.instagram.com/p/POST_ID/"&gt;View this post on Instagram&lt;/a&gt;
+&lt;/blockquote&gt;</pre>
+            </div>
+            
+            <div class="implementation">
+                <h3>Implementation Steps:</h3>
+                <ol class="steps">
+                    <li>Find an Instagram post URL you want to embed (e.g., <code>https://www.instagram.com/p/CqGcE5Pu_B1/</code>)</li>
+                    <li>Replace <code>POST_ID</code> in the code above with your post ID (e.g., <code>CqGcE5Pu_B1</code>)</li>
+                    <li>Add the script tag to your page (ideally in the footer or head)</li>
+                    <li>Place the blockquote tag wherever you want the post to appear</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Method 2: Using the oEmbed API Directly</h2>
+            <p>For more control over the display, you can use the Instagram oEmbed API directly:</p>
+            
+            <div class="code-block">
+                <pre>// JavaScript example using fetch
+async function getInstagramEmbed(postUrl) {
+    const response = await fetch(`https://api.instagram.com/oembed/?url=${encodeURIComponent(postUrl)}`);
+    const data = await response.json();
+    document.getElementById('instagram-container').innerHTML = data.html;
+    
+    // Execute the embed script
+    if (window.instgrm) {
+        window.instgrm.Embeds.process();
+    }
+}
+
+getInstagramEmbed('https://www.instagram.com/p/POST_ID/');</pre>
+            </div>
+            
+            <div class="code-block">
+                <pre>&lt;!-- Add this script to your page --&gt;
+&lt;script async src="https://www.instagram.com/embed.js"&gt;&lt;/script&gt;
+
+&lt;!-- Container for the Instagram post --&gt;
+&lt;div id="instagram-container"&gt;&lt;/div&gt;</pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Method 3: React Integration</h2>
+            <p>For a React application like MiniBiscos, you can create a component like this:</p>
+            
+            <div class="code-block">
+                <pre>import React, { useEffect } from 'react';
+
+const InstagramEmbed = ({ postId }) => {
+  useEffect(() => {
+    // Load Instagram embed script
+    const script = document.createElement('script');
+    script.src = 'https://www.instagram.com/embed.js';
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      // Cleanup script when component unmounts
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Process embeds when postId changes or when Instagram script loads
+    if (window.instgrm) {
+      window.instgrm.Embeds.process();
+    }
+  }, [postId]);
+
+  return (
+    &lt;blockquote
+      className="instagram-media"
+      data-instgrm-permalink={`https://www.instagram.com/p/${postId}/`}
+      style={{
+        background: '#FFF',
+        border: 0,
+        borderRadius: '3px',
+        boxShadow: '0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15)',
+        margin: '1px',
+        maxWidth: '540px',
+        minWidth: '326px',
+        padding: 0,
+        width: '100%',
+      }}
+    &gt;
+      &lt;a href={`https://www.instagram.com/p/${postId}/`}&gt;View on Instagram&lt;/a&gt;
+    &lt;/blockquote&gt;
+  );
+};
+
+export default InstagramEmbed;</pre>
+            </div>
+            
+            <div class="implementation">
+                <h3>Usage in MiniBiscos site:</h3>
+                <div class="code-block">
+                    <pre>import React from 'react';
+import InstagramEmbed from './components/InstagramEmbed';
+
+const InstagramSection = () => {
+  return (
+    &lt;div className="instagram-section"&gt;
+      &lt;h2&gt;Recent Posts from Instagram&lt;/h2&gt;
+      &lt;div className="instagram-grid"&gt;
+        &lt;InstagramEmbed postId="CqGcE5Pu_B1" /&gt;
+        &lt;InstagramEmbed postId="CpXzF7VuM9p" /&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default InstagramSection;</pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Comparing Implementation Methods</h2>
+            
+            <div class="pros-cons">
+                <div class="pros">
+                    <h3>Advantages</h3>
+                    <ul>
+                        <li>No API credentials or tokens required</li>
+                        <li>Automatic styling that matches Instagram's design</li>
+                        <li>Automatic updates when post content changes</li>
+                        <li>Handles videos, carousels, and images equally well</li>
+                        <li>Includes built-in interaction features (like/comment buttons)</li>
+                        <li>No need to worry about API rate limits or token expiration</li>
+                    </ul>
+                </div>
+                
+                <div class="cons">
+                    <h3>Limitations</h3>
+                    <ul>
+                        <li>Less customization options for appearance</li>
+                        <li>Need to manually update post IDs when wanting to show new content</li>
+                        <li>Cannot fetch posts programmatically based on hashtags or user</li>
+                        <li>Performance impact from third-party script loading</li>
+                        <li>Less control over the loading experience</li>
+                        <li>Dependence on Instagram's embed feature (subject to change)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Hybrid Approach for MiniBiscos</h2>
+            <p>For the MiniBiscos site, you could combine approaches for the best balance of simplicity and control:</p>
+            
+            <ol>
+                <li>Use embedded posts for a few featured posts that rarely change (e.g., in the About section)</li>
+                <li>Use the dynamic API approach we implemented for the Instagram feed section to show latest posts automatically</li>
+            </ol>
+            
+            <p>This gives you both the ease of embedded posts and the automation of API-based integration.</p>
+        </div>
+
+        <div class="section">
+            <h2>Live Example</h2>
+            <p>Below is a live example of an embedded Instagram post:</p>
+            
+            <div class="instagram-container">
+                <!-- Add your Instagram post embed here -->
+                <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/CyhBM5TgLCv/">
+                    <a href="https://www.instagram.com/p/CyhBM5TgLCv/">View this post on Instagram</a>
+                </blockquote>
+                <script async src="https://www.instagram.com/embed.js"></script>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
